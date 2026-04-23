@@ -2,7 +2,7 @@
 Utah dispersed camping site locator with offline and GPS functionality. Pulls data from BLM Surface Management Agency, Wilderness Study Areas, Areas of Critical Environmental Concern, and Special Recreation Management Areas, USFS Motor Vehicle Use Maps, SITLA (Utah state trust lands), UGRC, and other private inholdings parcel map data
 
 ## Open Access
-- USFS: within ~150ft of a designated open road per MVUM; FS road seasonal closures
+- USFS: within ~150ft of a designated open road per MVUM; FS roads may have seasonal closures
   - Wilderness Areas: walk-in, no mechanized
   - Uinta-Wasatch-Cache NF around the Wasatch Front has designated-site-only zones
 
