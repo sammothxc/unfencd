@@ -1,0 +1,15 @@
+# Local development overrides — applied automatically by docker compose.
+# Not used in production (Dockge / TrueNAS pulls docker-compose.yml only).
+
+services:
+  frontend:
+    image: ""
+    build:
+      context: ./frontend
+      target: dev
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "127.0.0.1:5173:5173"

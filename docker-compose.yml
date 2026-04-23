@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-unfencd}
+      POSTGRES_USER: ${POSTGRES_USER:-unfencd}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-unfencd} -d ${POSTGRES_DB:-unfencd}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  martin:
+    image: ghcr.io/maplibre/martin:v0.14.4
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-unfencd}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-unfencd}
+    volumes:
+      - ./martin/config.yaml:/config.yaml:ro
+    command: ["--config", "/config.yaml"]
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  tileserver:
+    image: maptiler/tileserver-gl:latest
+    restart: unless-stopped
+    volumes:
+      - ./tiles/data:/data:ro
+    command: ["--config", "/data/config.json"]
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  frontend:
+    image: ghcr.io/samwarr/unfencd-frontend:latest
+    restart: unless-stopped
+    depends_on:
+      - martin
+      - tileserver
+    ports:
+      - "127.0.0.1:80:80"
+    environment:
+      VITE_MARTIN_URL: ${VITE_MARTIN_URL:-http://localhost:3000}
+      VITE_TILESERVER_URL: ${VITE_TILESERVER_URL:-http://localhost:8080}
+
+volumes:
+  pgdata:

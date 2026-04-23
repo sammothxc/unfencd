@@ -1,0 +1,15 @@
+listen_addresses: "0.0.0.0:3000"
+
+postgres:
+  connection_string: $DATABASE_URL
+  pool_size: 10
+
+# Sources are auto-discovered from PostGIS. Tables and functions with geometry
+# columns will be exposed automatically. Explicit sources can be added below.
+# See: https://maplibre.org/martin/
+
+auto_publish:
+  tables:
+    # Only publish tables in the public schema with a geometry column.
+    from_schemas:
+      - public

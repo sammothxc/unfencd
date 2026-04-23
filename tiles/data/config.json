@@ -1,0 +1,8 @@
+{
+  "options": {
+    "paths": {
+      "mbtiles": "/data"
+    }
+  },
+  "data": {}
+}
